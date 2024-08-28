@@ -1,1 +1,1 @@
-./1brc-go
+./1brc-baseline

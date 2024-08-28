@@ -21,7 +21,32 @@ DEFAULT_INPUT="testfiles/*.txt"
 POSTFIX=${1:-""}
 INPUT=${2:-$DEFAULT_INPUT}
 
+if [ "$#" -eq 0 ] || [ "$#" -gt 2 ] || [ "$POSTFIX" = "-h" ]; then
+  echo "Usage: ./test.sh <your name> [input file pattern]"
+  echo
+  echo "For each test sample matching <input file pattern> (default '$DEFAULT_INPUT')"
+  echo "runs <fork name> implementation and diffs the result with the expected output."
+  echo "Note that optional <input file pattern> should be quoted if contains wild cards."
+  echo
+  echo "Examples:"
+  echo "./test.sh baseline"
+  echo "./test.sh baseline testfiles/measurements-1.txt"
+  echo "./test.sh baseline 'testfiles/measurements-*.txt'"
+  exit 1
+fi
+
+if [ ! -x ./calculate_average_$POSTFIX.sh ]; then
+    echo "./calculate_average_$POSTFIX.sh is not executable, please run:"
+    echo "chmod +x calculate_average_$POSTFIX.sh"
+    exit 1
+fi
+
 if [ -f "./prepare_$POSTFIX.sh" ]; then
+  if [ ! -x ./prepare_$POSTFIX.sh ]; then
+    echo "./prepare_$POSTFIX.sh is not executable, please run:"
+    echo "chmod +x prepare_$POSTFIX.sh"
+    exit 1
+  fi
   "./prepare_$POSTFIX.sh"
 fi
 
